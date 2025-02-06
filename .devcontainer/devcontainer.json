@@ -42,6 +42,7 @@
 				"ms-python.vscode-pylance",
 				"ms-python.black-formatter"
 			],
+			"python.analysis.typeCheckingMode": "off",
 			"[python]": {
 				"editor.defaultFormatter": "ms-python.black-formatter",
 				"editor.formatOnSave": true
@@ -50,7 +51,5 @@
 	},
 	// Comment out the next line if you want to run as root instead
 	"remoteUser": "feelpp",
-	"postCreateCommand": "python3 -m venv --system-site-packages paraview-env",
-	"postCreateCommand": "source ./paraview-env/bin/activate",
-	"postCreateCommand": "pip install -r /workspaces/hifimagnet.paraview/requirements.txt"
+	"postCreateCommand": "./start-venv.sh"
 }

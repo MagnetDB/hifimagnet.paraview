@@ -18,7 +18,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
     PATH=/opt/paraview/bin:$PATH \
-    OMPI_MCA_btl_vader_single_copy_mechanism=none
+    OMPI_MCA_btl_vader_single_copy_mechanism=none \
+    PYTHONPATH="/opt/paraview/lib/python$PYVER/site-packages"
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
@@ -71,6 +72,6 @@ RUN useradd -m -s /bin/bash -G sudo,video feelpp && \
     echo "feelpp ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/feelpp
 
 USER $USERNAME
-ENV HOME /home/$USERNAME
+ENV HOME=/home/$USERNAME
 WORKDIR /home/feelpp
 
