@@ -238,6 +238,17 @@ def getresultInfo(
 
 
 def keyinfo(key: str) -> tuple:
+    """Extracts toolbox, physic, and fieldname from a key string.
+
+    Args:
+        key (str): The key string to be split.
+
+    Raises:
+        RuntimeError: If the key cannot be split into the expected parts.
+
+    Returns:
+        tuple: A tuple containing toolbox, physic, and fieldname.
+    """
     keyinfo = key.split(".")
     if len(keyinfo) == 1:
         toolbox = None
@@ -291,6 +302,16 @@ def load(file: str, printed: bool = True):
 
     return input
 
+def torque(input, key: str, AttributeType: str):
+    """compute torque"""
+
+    # compute G for cell
+
+    calculator1 = Calculator(registrationName=f"torque_{key}", Input=input)
+    calculator1.AttributeType = AttributeType  # 'Cell Data'
+    calculator1.ResultArrayName = f"torque_{key}"
+
+    calculator1.Function = f"coordsX*{key}"
 
 def momentN(input, key: str, nkey: str, order: int, AttributeType: str):
     """compute moment of order N
