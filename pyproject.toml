@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-hifimagnetParaview"
+version = "0.1.0"
+description = "Python HifiMagnet Paraview contains utils to view results"
+readme = "README.md"
+authors = [
+    {name = "Christophe Trophime", email = "christophe.trophime@lncmi.cnrs.fr"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["python_hifimagnetParaview", "paraview", "hifimagnet", "post-processing"]
+
+dependencies = [
+    "argcomplete>=3.3.0",
+    "gmsh>=4.13.1",
+    "imgdiff>=1.7.1",
+    "meshlib>=2.4.2.30",
+    "natsort>=8.4.0",
+    "numpy>=1.26.4",
+    "pint>=0.23",
+    "tabulate>=0.9.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.2.1",
+    "pytest-image-diff>=0.0.11",
+]
+dev = [
+    "pytest>=8.2.1",
+    "pytest-image-diff>=0.0.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/MagnetDB/hifimagnet.paraview"
+Repository = "https://github.com/MagnetDB/hifimagnet.paraview"
+Issues = "https://github.com/MagnetDB/hifimagnet.paraview/issues"
+
+[tool.setuptools]
+packages = ["python_hifimagnetParaview"]
+
+[tool.setuptools.package-data]
+python_hifimagnetParaview = ["*.json", "*.xml"]
+
+[tool.pytest.ini_options]
+testpaths = ["test", "tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
