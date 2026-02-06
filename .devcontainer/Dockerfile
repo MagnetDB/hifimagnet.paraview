@@ -2,7 +2,7 @@ ARG PYVER=3.10
 FROM python:${PYVER}-slim
 LABEL maintainer Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>
 
-ARG PYVER=3.10
+ARG PYVER=3.13
 ARG PV_VERSION_MAJOR=5.12
 ARG PV_VERSION_MINOR=0
 ARG PV_VERSION=${PV_VERSION_MAJOR}.${PV_VERSION_MINOR}
