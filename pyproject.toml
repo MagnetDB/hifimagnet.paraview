@@ -50,6 +50,9 @@ Homepage = "https://github.com/MagnetDB/hifimagnet.paraview"
 Repository = "https://github.com/MagnetDB/hifimagnet.paraview"
 Issues = "https://github.com/MagnetDB/hifimagnet.paraview/issues"
 
+[project.scripts]
+hifimagnet-paraview = "python_hifimagnetParaview.cli:main"
+
 [tool.setuptools]
 packages = ["python_hifimagnetParaview"]
 
