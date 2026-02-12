@@ -1,6 +1,6 @@
 ARG PYVER=3.10
 FROM python:${PYVER}-slim
-LABEL maintainer Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>
+LABEL maintainer="Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>"
 
 ARG PYVER=3.13
 ARG PV_VERSION_MAJOR=5.12
