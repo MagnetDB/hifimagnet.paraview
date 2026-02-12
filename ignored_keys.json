@@ -1,0 +1,13 @@
+{
+    "ignored_keys": [
+        "elasticity.Lame1",
+        "elasticity.Lame2",
+        "elasticity.PoissonCoefficient",
+        "elasticity.YoungModulus",
+        "Volume",
+        "r",
+        "Cos",
+        "Sin",
+        "coord"
+    ]
+}
