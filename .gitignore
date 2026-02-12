@@ -11,6 +11,17 @@
 M9Bitters_18MW_thmagel
 M9Bitters_18MW_laplace
 
+# python stuff
+__pycache__/
+
+
+# Python virtualenvs
 .venv
 venv
 hifimagnetparaview-env
+
+# Test data (extracted from data.tar.gz)
+test/cases/
+test/models/
+test/Pictures/
+test/.data_extracted
