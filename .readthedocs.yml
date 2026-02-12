@@ -1,0 +1,40 @@
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+#
+# NOTE: This project uses GitHub Pages for documentation deployment.
+# This file is kept for reference but is not actively used.
+
+version: 2
+
+# Build documentation in the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: false
+
+# Build formats (htmlzip, pdf, epub)
+formats:
+  - pdf
+  - epub
+
+# Python configuration
+python:
+  version: "3.10"
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+    - requirements: docs/requirements.txt
+
+# Build settings
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+  jobs:
+    post_create_environment:
+      # Install system packages if needed
+      - echo "Environment created"
+    post_install:
+      # Install additional dependencies if needed
+      - echo "Dependencies installed"
