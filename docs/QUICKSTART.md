@@ -32,7 +32,6 @@ docs/
 ├── development.rst      # Development guide
 ├── Makefile             # Build script (Unix)
 ├── make.bat             # Build script (Windows)
-├── requirements.txt     # Sphinx dependencies
 └── README.md            # This file
 ```
 

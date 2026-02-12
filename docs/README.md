@@ -11,9 +11,6 @@ First, install the documentation dependencies:
 ```bash
 # Install with pip
 pip install -e ".[docs]"
-
-# Or install directly from requirements.txt
-pip install -r docs/requirements.txt
 ```
 
 ### Build HTML Documentation
