@@ -1,8 +1,171 @@
-# Scripts for HiFiMagnet post-processing with Paraview
+# HiFiMagnet Paraview - Post-processing Tools
 
-This directory contains scripts useful for post-processing feelpp results with Paraview
+A Python module for post-processing and visualization of HiFiMagnet/Feel++ simulation results using Paraview.
 
-## `python_hifimagnetParaview.cli`:
+## Description
+
+`python_hifimagnetParaview` is a comprehensive Python package that provides automated post-processing capabilities for electromagnetics and thermomechanics simulations. It integrates with Paraview to enable batch processing of simulation exports, supporting 3D, 2D, and axisymmetric geometries.
+
+**Key Features:**
+- **Statistical Analysis**: Compute descriptive statistics per PointData/CellData for each block/marker
+- **Histogram Generation**: Create histograms for field distributions with customizable bins
+- **Visualization**: Generate automated views with customizable colormaps, ranges, and backgrounds
+- **Plot Extraction**: Extract 1D plots along radial, axial, or angular coordinates
+- **Multi-format Support**: Process Feel++ exports, Ansys VTK files, and other Paraview-compatible formats
+- **Comparison Tools**: Compare results between different geometries or simulation approaches
+- **CSV Export**: All computed data saved in CSV format for further analysis
+
+**Main Modules:**
+- `cli`: Command-line interface for batch post-processing
+- `stats`, `statsAxi`: Statistical analysis for 3D/2D and axisymmetric cases
+- `histo`, `histoAxi`: Histogram generation
+- `view`: Automated visualization creation
+- `compare`: Result comparison between different simulations
+- `meshinfo`, `meshinfoAxi`: Mesh information extraction
+
+## Installation
+
+### Python Package with Virtual Environment
+
+For Linux/Mac OS X:
+
+```bash
+# Clone the repository
+git clone https://github.com/MagnetDB/hifimagnet.paraview.git
+cd hifimagnet.paraview
+
+# Create virtual environment with access to system site-packages (for Paraview)
+python3 -m venv --system-site-packages hifimagnetParaview-env
+
+# Activate the virtual environment
+source ./hifimagnetParaview-env/bin/activate
+
+# Install the package
+pip install -e .
+```
+
+**Note:** The `--system-site-packages` flag is required to access Paraview's Python bindings installed at the system level.
+
+To deactivate the virtual environment:
+```bash
+deactivate
+```
+
+### Debian Package
+
+Installation as a Debian package (to be implemented):
+
+```bash
+# Download the .deb package
+wget https://github.com/MagnetDB/hifimagnet.paraview/releases/download/vX.Y.Z/python-hifimagnet-paraview_X.Y.Z_all.deb
+
+# Install the package
+sudo dpkg -i python-hifimagnet-paraview_X.Y.Z_all.deb
+
+# Install dependencies if needed
+sudo apt-get install -f
+```
+
+### Docker Container
+
+Build the Docker image from the provided Dockerfile:
+
+**Standard Paraview:**
+```bash
+# Build with default settings (Python 3.10, Paraview 5.12)
+docker build -t hifimagnet-paraview:latest .
+
+# Build with custom versions
+docker build \
+  --build-arg PYVER=3.11 \
+  --build-arg PV_VERSION_MAJOR=5.12 \
+  --build-arg PV_VERSION_MINOR=1 \
+  -t hifimagnet-paraview:5.12.1 .
+```
+
+**Headless Paraview (for HPC):**
+```bash
+# Build with osmesa-MPI for offscreen rendering
+docker build -f Dockerfile.opengl \
+  --build-arg PV_FLAVOR=osmesa-MPI \
+  -t hifimagnet-paraview:osmesa .
+
+# Or with EGL support
+docker build -f Dockerfile.opengl \
+  --build-arg PV_FLAVOR=egl-MPI \
+  -t hifimagnet-paraview:egl .
+```
+
+**Run the container:**
+```bash
+# Interactive mode
+docker run -it --rm \
+  -v $(pwd)/data:/data \
+  hifimagnet-paraview:latest bash
+
+# Run post-processing
+docker run --rm \
+  -v $(pwd)/data:/data \
+  hifimagnet-paraview:latest \
+  pvbatch -m python_hifimagnetParaview.cli 3D /data/Export.case --stats --histos
+```
+
+**Build Arguments:**
+- `PYVER`: Python version (default: 3.10)
+- `PV_VERSION_MAJOR`: Paraview major version (e.g., 5.12)
+- `PV_VERSION_MINOR`: Paraview minor version (e.g., 0)
+- `PV_FLAVOR`: Paraview flavor - valid values: `osmesa-MPI`, `egl-MPI`
+
+### Singularity Container
+
+Build from Docker image:
+
+```bash
+# Build from Docker image
+singularity build hifimagnet-paraview.sif docker://hifimagnet-paraview:latest
+
+# Or build from definition file (if provided)
+sudo singularity build hifimagnet-paraview.sif hifimagnet-paraview.def
+```
+
+**Run with Singularity:**
+```bash
+# Interactive mode
+singularity shell hifimagnet-paraview.sif
+
+# Execute post-processing
+singularity exec hifimagnet-paraview.sif \
+  pvbatch -m python_hifimagnetParaview.cli 3D Export.case --stats --histos
+
+# Bind data directories
+singularity exec --bind /path/to/data:/data hifimagnet-paraview.sif \
+  pvbatch -m python_hifimagnetParaview.cli Axi /data/Export.case --views
+```
+
+## Documentation
+
+Full documentation is available online at: **https://magnetdb.github.io/hifimagnet.paraview/**
+
+### Building the Documentation Locally
+
+To build the HTML documentation locally:
+
+```bash
+# Install documentation dependencies
+pip install -e ".[docs]"
+
+# Build the documentation
+cd docs
+make html
+```
+
+The built documentation will be available in `docs/_build/html/index.html`.
+
+For more information, see [docs/README.md](docs/README.md).
+
+## Usage
+
+### Command-line Interface - `python_hifimagnetParaview.cli`
 
 * get range per PointData, CellData
 * compute stats per PointData, CellData for insert
@@ -47,8 +210,18 @@ Optional specific to 3D:
 * `--z`: with "--views", create a OxOy view at z
 * `--theta`: with "--views", create OrOz views at theta=0/30/60/90/120/150deg
 
- 
-## Example for Ansys files (output.vtk)
+### Getting Help
+
+```bash
+pvbatch -m python_hifimagnetParaview.cli --help
+pvbatch -m python_hifimagnetParaview.cli 3D --help
+pvbatch -m python_hifimagnetParaview.cli 2D --help
+pvbatch -m python_hifimagnetParaview.cli Axi --help
+```
+
+## Examples
+
+### Example for Ansys files (output.vtk)
 
 Open the file with paraview
 
@@ -58,8 +231,8 @@ paraview output.vtk
 
 Write the fields in a json with their type:
 
-.output.json
-```bash
+`output.json`:
+```json
 {
     "S_EQV": {
         "Type": "VonMises",
@@ -68,7 +241,7 @@ Write the fields in a json with their type:
 }
 ```
 
-Run the command with any post-processing operation :
+Run the command with any post-processing operation:
 
 Basic command
 ```bash
@@ -96,16 +269,7 @@ pvbatch -m python_hifimagnetParaview.cli 2D  tmp/ansys.exports/output.vtk --json
 pvbatch -m python_hifimagnetParaview.cli 2D  tmp/ansys.exports/output.vtk --json tmp/output.json --plots --r 0.20895
 ```
 
-## help
-
-```bash
-pvbatch -m python_hifimagnetParaview.cli --help
-pvbatch -m python_hifimagnetParaview.cli 3D --help
-pvbatch -m python_hifimagnetParaview.cli 2D --help
-pvbatch -m python_hifimagnetParaview.cli Axi --help
-```
-
-## examples
+### Feel++ Examples
 
 ```bash
 pvbatch -m python_hifimagnetParaview.cli 3D  ../../HL-31/test/hybride-Bh27.7T-Bb9.15T-Bs9.05T_HPfixed_BPfree/bmap/np_32/elasticity.exports/Export.case --plots --z -0.15 -0.1 -0.05 0 0.05 0.1 0.15  --r 1.94e-2 2.52e-2 3.17e-2
@@ -113,20 +277,9 @@ pvbatch -m python_hifimagnetParaview.cli 2D  tmp/cfpdes-thmagel_hcurl-Axi-static
 pvbatch -m python_hifimagnetParaview.cli Axi  tmp/cfpdes-thmagel_hcurl-Axi-static-nonlinear/M9Bitters_18MW_laplace/gradH/Montgomery/Colebrook/np_16/cfpdes.exports/Export.case --stats --histos --json tmp/M9Bitters_18MW-cfpdes-thmagel_hcurl-nonlinear-Axi-sim.json
 ```
 
-## running testsuite
+### Comparing Results Between Simulations
 
-Use paraview.simple for Python 3.10
-```bash
-export PYTHONPATH=/opt/paraview/lib/python3.10/site-packages/
-```
-
-To run tests located in test/
-```bash
-pytest
-```
-
-
-## compare results between 2 paraview.exports
+Compare results between 2 paraview.exports using `python_hifimagnetParaview.compare`.
 
 Required
 * `--mdata`: give a dict with 2 results directory ('{geo1:directory1, geo2:directory2}')
@@ -151,13 +304,12 @@ Optional
 * `--friction`: 
     * give friction for pictures name
 
-
-### examples
+**Example:**
 ```bash
 python -m python_hifimagnetParaview.compare --mdata '{"3D": "tmp/HL-31_HPfixed_BPfixed/grad/Constant/np_32/thermo-electric.exports/paraview.exports","Axi": "tmp/M19061901_laplace_dilatation31k/grad/Montgomery/Constant/np_16/cfpdes.exports/paraview.exports"}'  --name M19061901 --cooling grad --friction Constant --plots --r --theta --histos --views
 ```
 
-# Use with matplotlib
+### Using Matplotlib for Custom Plots
 
 To view the plot:
 
@@ -165,7 +317,7 @@ To view the plot:
 python vonmises-vs-theta.py --file 'r=0.0194m-z=0.07m-1.csv' 'r=0.0194m-z=0.07m-0.csv' --key thermo_electric.heat.temperature --ylabel 'T [K]' --title 'Temperature in H1: r=xx, z=yy' --show
 ```
 
-# Get estimation of Channel width
+### Channel Width Estimation with MeshLib
 
 Need to install MeshLib:
 
@@ -194,12 +346,25 @@ To exit the virtual env:
 deactivate
 ```
 
-References:
-
+**References:**
 * [MeshLib](https://github.com/MeshInspector/MeshLib)
-* see https://stackoverflow.com/questions/61159587/measure-distance-between-meshes
+* [Measuring distance between meshes](https://stackoverflow.com/questions/61159587/measure-distance-between-meshes)
 
-# To-do:
+## Testing
+
+### Running the Test Suite
+
+Configure the Python path to use Paraview's Python bindings:
+```bash
+export PYTHONPATH=/opt/paraview/lib/python3.10/site-packages/
+```
+
+Run tests located in the `test/` directory:
+```bash
+pytest
+```
+
+## Development Roadmap
 - [ ] monitor memory - for stats,histos improve by using selectblock instead of extractblock?
 - [x] create a cli with argsparse command stats,plots,views
 - [x] split pv-statistics.py accordingly to cli commands (note add subparser option)
@@ -230,60 +395,23 @@ References:
         -merge histos
         -better boxplot
 
-- Open Questions:
+**Open Questions:**
   - How to discard matplotlib plots when line is not in insert?
   - Add statics per matplotlib?
-   
-<!-- example with pvpython and pvbatch
-connect with server?
 
-for Axi, create a 3D view and apply the rest?
-ExtractSurface then RotationalExtrusion () then Transform (Rotation?) - non cree surface en 3D pour all
-a tester par block
- -->
+## References
 
-# With Python virtual env
-
-For Linux/Mac Os X:
-
-```bash
-$ python3 -m venv --system-site-packages hifimagnet-env
-$ source ./hifimagnet-env/bin/activate
-$ pip install -r requirements.txt
-```
-
-# With Docker
-
-Building docker images from python slim docker image.
-
-* standard paraview:
-  * `PYVER python` version to use (default: 3.10) 
-  * `PV_VERSION_MAJOR` paraview major version (eg: 5.12)
-  * `PV_VERSION_MINOR` paraview minor version (eg: 0)
-  * `PV_FLAVOR`
-* headless paraview:
-  * `PV_FLAVOR` specify the paraview flavor to "package". Valid values are: osmesa-MPI, egl-MPI
-
-To build the image:
-
-```bash
-docker build ...
-```
-
-# With Singularity
-
-# References
-
-- [feelpp](https://docs.feelpp.org/home/index.html)
+- [Feel++](https://docs.feelpp.org/home/index.html)
 - [HiFiMagnet](https://github.com/feelpp/hifimagnet)
-- [Paraview](https://docs.paraview.org/en/latest/Tutorials/SelfDirectedTutorial/batchPythonScripting.html)
+- [Paraview Python Scripting](https://docs.paraview.org/en/latest/Tutorials/SelfDirectedTutorial/batchPythonScripting.html)
 
+---
 
+## Deprecated Scripts
 
-# Old
+The following scripts are deprecated and kept for reference only. Use `python_hifimagnetParaview.cli` instead.
 
-
-## `pv-statistics`:
+### `pv-statistics` (Deprecated)
 
 * get range per PointData, CellData
 * compute stats per PointData, CellData for insert
@@ -305,21 +433,19 @@ Optional
        * display 2D OxOy view for z in `args.z`
        * `--r`: display theta plot for r in `args.r` and z in `args.z`
     * `--save`: save plots  
- 
-examples
 
+**Examples:**
 ```bash
 python statistics.py --help
 python pv-statistics.py ../../HL-31/test/hybride-Bh27.7T-Bb9.15T-Bs9.05T_HPfixed_BPfree/bmap/np_32/thermo-electric.exports/Export.case
 pvbatch pv-statistics.py ../../HL-31/test/hybride-Bh27.7T-Bb9.15T-Bs9.05T_HPfixed_BPfree/bmap/np_32/elasticity.exports/Export.case --z -0.15 -0.1 -0.05 0 0.05 0.1 0.15  --r 1.94e-2 2.52e-2 3.17e-2 
 ```
 
-## `pv-statistics2D`:
+### `pv-statistics2D` (Deprecated)
 
 * for 2D
 
-examples
-
+**Examples:**
 ```bash
 pvbatch pv-statistics2D.py M9Bitters_18MW_thmagel/M9Bi_18MW_elas_laplace_withoutTierod/gradH/Montgomery/Colebrook/np_1/cfpdes.exports/Export.case
 ```
@@ -340,7 +466,7 @@ Optional
     * `--r`: 
     * `--save`: save plots  
 
-## `pv-statisticsAxi`:
+### `pv-statisticsAxi` (Deprecated)
 
 * for Axi
 
@@ -360,16 +486,8 @@ Optional
     * `--r`: 
     * `--save`: save plots  
 
-examples
-
+**Examples:**
 ```bash
 pvbatch pv-statisticsAxi.py M9Bitters_18MW_laplace/gradH/Montgomery/Colebrook/np_1/np_1/cfpdes.exports/Export.case
 ```
-
-
-
-
-<!--
-![Control Camera in Paraview](/assets/images/Paraview-camera.png)
---!>
 
