@@ -25,6 +25,33 @@ A Python module for post-processing and visualization of HiFiMagnet/Feel++ simul
 
 ## Installation
 
+### Prerequisites
+
+**Git LFS (Large File Storage):**
+
+This repository uses Git LFS to manage large test data files. Install Git LFS before cloning:
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install git-lfs
+
+# macOS
+brew install git-lfs
+
+# Windows (with Git for Windows)
+# Git LFS is included in recent versions
+
+# Initialize Git LFS for your user (first-time only)
+git lfs install
+```
+
+Then clone the repository (Git LFS will automatically download tracked files):
+
+```bash
+git clone https://github.com/MagnetDB/hifimagnet.paraview.git
+cd hifimagnet.paraview
+```
+
 ### Python Package with Virtual Environment
 
 For Linux/Mac OS X:
@@ -354,15 +381,31 @@ deactivate
 
 ### Running the Test Suite
 
+The test suite uses pytest with automatic test data management. Test data is automatically extracted from `test/data.tar.gz` on first run.
+
 Configure the Python path to use Paraview's Python bindings:
 ```bash
 export PYTHONPATH=/opt/paraview/lib/python3.10/site-packages/
 ```
 
-Run tests located in the `test/` directory:
+Run all tests:
 ```bash
 pytest
 ```
+
+Run tests with verbose output:
+```bash
+pytest -v
+```
+
+Run specific test modules:
+```bash
+pytest test/test_2D.py
+pytest test/test_3D.py
+pytest test/test_Axi.py
+```
+
+For more details on the test suite structure, CI integration, and caching strategies, see [test/README.md](test/README.md).
 
 ## Development Roadmap
 - [ ] monitor memory - for stats,histos improve by using selectblock instead of extractblock?

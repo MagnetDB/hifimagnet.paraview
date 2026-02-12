@@ -1,6 +1,25 @@
-# Additionnal indivdual scripts
+# Additional individual scripts
 
 This folder regroups other python scripts for other display uses.
+
+## migrate-to-lfs.sh
+
+Migration helper script to set up Git LFS for test data archives.
+
+This script automates the process of migrating the test data archive to Git LFS:
+- Checks if Git LFS is installed
+- Verifies `.gitattributes` configuration
+- Handles migration of existing files
+- Provides clear instructions for next steps
+
+### Usage
+
+```bash
+# From repository root
+./scripts/migrate-to-lfs.sh
+```
+
+The script will guide you through the migration process and provide appropriate commands for your situation.
 
 ## profiles.py
 

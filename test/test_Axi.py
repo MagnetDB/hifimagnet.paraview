@@ -7,6 +7,12 @@ import pandas as pd
 
 from PIL import Image
 
+from test.base_test import (
+    assert_images_equal,
+    validate_temperature_stats,
+    validate_vonmises_stats,
+    load_measures_csv
+)
 from python_hifimagnetParaview.cli import init
 from python_hifimagnetParaview.json import returnExportFields
 from python_hifimagnetParaview.method import convert_data
@@ -84,28 +90,6 @@ def test_init(file, jsonfile):
     ), f"fieldtype:{len(fieldtype.keys())} > fieldunits:{len(fieldunits.keys())}"
 
 
-def assert_images_equal(image_1: str, image_2: str):
-    img1 = Image.open(image_1)
-    img2 = Image.open(image_2)
-
-    # Convert to same mode and size for comparison
-    img2 = img2.convert(img1.mode)
-    img2 = img2.resize(img1.size)
-
-    sum_sq_diff = np.sum(
-        (np.asarray(img1).astype("float") - np.asarray(img2).astype("float")) ** 2
-    )
-
-    if sum_sq_diff == 0:
-        # Images are exactly the same
-        pass
-    else:
-        normalized_sum_sq_diff = sum_sq_diff / np.sqrt(sum_sq_diff)
-        assert (
-            normalized_sum_sq_diff < 0.001
-        ), f'{image_1.split("/")[-1]}: {normalized_sum_sq_diff} > 0.001'
-
-
 @pytest.mark.parametrize("file,jsonfile", axi_cases)
 def test_views(file, jsonfile):
 
@@ -144,7 +128,7 @@ def test_views(file, jsonfile):
 
         imageref = f"./test/Pictures/Axi/{field}.png"
         imagenew = f"{basedir}/views/{field}.png"
-        assert_images_equal(imageref, imagenew)
+        assert_images_equal(imageref, imagenew, "Axi")
 
 
 ### pour gros fichiers git lfs
@@ -166,65 +150,15 @@ def test_stats(file, jsonfile):
     statsheat = pd.read_csv(
         f"{basedir}/stats/cfpdes.heat.temperature-descriptivestats-create.csv"
     )
-    try:
-        heatmeasures = pd.read_csv(
-            f'{basedir.replace("cfpdes.exports/paraview.exports","heat.measures/values.csv")}'
-        )
-    except:
-        heatmeasures = None
+    heatmeasures = load_measures_csv(basedir, "heat")
 
     if isinstance(heatmeasures, pd.DataFrame):
-        units = {"temperature": fieldunits["temperature"]["Units"]}
-
-        Feel_T_max = convert_data(
-            units, heatmeasures["Statistics_Stat_T_max"].iloc[0], "temperature"
-        )
-        Feel_T_mean = convert_data(
-            units, heatmeasures["Statistics_Stat_T_mean"].iloc[0], "temperature"
-        )
-        Feel_T_min = convert_data(
-            units, heatmeasures["Statistics_Stat_T_min"].iloc[0], "temperature"
-        )
-
-        assert (
-            abs(1 - Feel_T_max / statsheat["Maximum"].iloc[0]) < 0.001
-        ), f'Tmax: abs(1-Feel:{Feel_T_max}/Paraview:{statsheat["Maximum"].iloc[0]}) > 0.001'
-        assert (
-            abs(1 - Feel_T_mean / statsheat["Mean"].iloc[0]) < 0.001
-        ), f'Tmean: abs(1-Feel:{Feel_T_mean}/Paraview:{statsheat["Mean"].iloc[0]}) > 0.001'
-        assert (
-            abs(1 - Feel_T_min / statsheat["Minimum"].iloc[0]) < 0.001
-        ), f'Tmin: abs(1-Feel:{Feel_T_min}/Paraview:{statsheat["Minimum"].iloc[0]}) > 0.001'
+        validate_temperature_stats(heatmeasures, statsheat, fieldunits, "Axi")
 
     statselastic = pd.read_csv(
         f"{basedir}/stats/cfpdes.expr.Vonmises-descriptivestats-create.csv"
     )
-    try:
-        elasticmeasures = pd.read_csv(
-            f'{basedir.replace("cfpdes.exports/paraview.exports","elastic.measures/values.csv")}'
-        )
-    except:
-        elasticmeasures = None
+    elasticmeasures = load_measures_csv(basedir, "elastic")
 
     if isinstance(elasticmeasures, pd.DataFrame):
-        units = {"Vonmises": fieldunits["Vonmises"]["Units"]}
-
-        Feel_VM_max = convert_data(
-            units, elasticmeasures["Statistics_VonMises_Tore_max"].iloc[0], "Vonmises"
-        )
-        Feel_VM_mean = convert_data(
-            units, elasticmeasures["Statistics_VonMises_Tore_mean"].iloc[0], "Vonmises"
-        )
-        Feel_VM_min = convert_data(
-            units, elasticmeasures["Statistics_VonMises_Tore_min"].iloc[0], "Vonmises"
-        )
-
-        assert (
-            abs(1 - Feel_VM_max / statselastic["Maximum"].iloc[0]) < 0.01
-        ), f'VonMisesmax: abs(1-Feel:{Feel_VM_max}/Paraview:{statselastic["Maximum"].iloc[0]}) > 0.01'
-        assert (
-            abs(1 - Feel_VM_mean / statselastic["Mean"].iloc[0]) < 0.01
-        ), f'VonMisesmean: abs(1-Feel:{Feel_VM_mean}/Paraview:{statselastic["Mean"].iloc[0]}) > 0.01'
-        assert (
-            abs(1 - Feel_VM_min / statselastic["Minimum"].iloc[0]) < 0.01
-        ), f'VonMisesmin: abs(1-Feel:{Feel_VM_min}/Paraview:{statselastic["Minimum"].iloc[0]}) > 0.01'
+        validate_vonmises_stats(elasticmeasures, statselastic, fieldunits, "Axi", field_name="Vonmises")
