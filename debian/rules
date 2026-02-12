@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+export PYBUILD_NAME=hifimagnetparaview
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+# If you need to override any targets, do it here
+# For example:
+# override_dh_auto_test:
+# 	# Skip tests that require Paraview GUI
+# 	dh_auto_test || true

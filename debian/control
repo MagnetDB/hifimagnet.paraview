@@ -1,0 +1,45 @@
+Source: python-hifimagnetparaview
+Section: python
+Priority: optional
+Maintainer: Christophe Trophime <christophe.trophime@lncmi.cnrs.fr>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               pybuild-plugin-pyproject,
+               python3-all,
+               python3-setuptools,
+               python3-wheel
+Standards-Version: 4.6.2
+Homepage: https://github.com/MagnetDB/hifimagnet.paraview
+Vcs-Browser: https://github.com/MagnetDB/hifimagnet.paraview
+Vcs-Git: https://github.com/MagnetDB/hifimagnet.paraview.git
+Rules-Requires-Root: no
+
+Package: python3-hifimagnetparaview
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3-argcomplete (>= 3.3.0),
+         python3-gmsh (>= 4.13.1),
+         python3-imgdiff (>= 1.7.1),
+         python3-meshlib (>= 2.4.2.30),
+         python3-natsort (>= 8.4.0),
+         python3-numpy (>= 1.26.4),
+         python3-pint (>= 0.23),
+         python3-tabulate (>= 0.9.0),
+         python3-paraview
+Description: Post-processing tools for HiFiMagnet/Feel++ simulations
+ python_hifimagnetParaview is a comprehensive Python package that provides
+ automated post-processing capabilities for electromagnetics and
+ thermomechanics simulations. It integrates with Paraview to enable batch
+ processing of simulation exports.
+ .
+ Key features:
+  * Statistical Analysis: Compute descriptive statistics per PointData/CellData
+  * Histogram Generation: Create histograms for field distributions
+  * Visualization: Generate automated views with customizable colormaps
+  * Plot Extraction: Extract 1D plots along radial, axial, or angular coords
+  * Multi-format Support: Process Feel++ exports, Ansys VTK files, etc.
+  * Comparison Tools: Compare results between different geometries
+  * CSV Export: All computed data saved in CSV format for further analysis
+ .
+ Supports 3D, 2D, and axisymmetric geometries.

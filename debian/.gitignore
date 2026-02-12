@@ -1,0 +1,9 @@
+# Debian packaging build artifacts
+*.debhelper
+*.debhelper.log
+*.substvars
+.debhelper/
+debhelper-build-stamp
+files
+python3-hifimagnetparaview/
+tmp/
