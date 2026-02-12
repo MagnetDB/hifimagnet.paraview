@@ -1,0 +1,231 @@
+{
+    "coord": {
+        "Symbol": "r"
+    },
+    "VolumicMass": {
+        "Symbol": "rho",
+        "mSymbol": "$\\rho$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "ThermalConductivity": {
+        "Symbol": "k",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "ElectricalConductivity": {
+        "Symbol": "Sigma",
+        "mSymobol": "$\\sigma$",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "YoungModulus": {
+        "Symbol": "E",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "Length": {
+        "Symbol": ""
+    },
+    "Area": {
+        "Symbol": "A"
+    },
+    "Volume": {
+        "Symbol": "V"
+    },
+    "mu0": {
+        "Symbol": "mu"
+    },
+    "h": {
+        "Symbol": "hw"
+    },
+    "Flow": {
+        "Symbol": "Q"
+    },
+    "Current": {
+        "Symbol": "I"
+    },
+    "Power": {
+        "Symbol": "W"
+    },
+    "temperature": {
+        "Symbol": "T",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "electric_potential": {
+        "Symbol": "V",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_density": {
+        "Symbol": "J",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_densitynorm": {
+        "Symbol": "J",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_density_x": {
+        "Symbol": "Jx",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_density_y": {
+        "Symbol": "Jy",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_density_z": {
+        "Symbol": "Jz",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_density_ur": {
+        "Symbol": "Jr",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "current_density_ut": {
+        "Symbol": "Jt",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "Fext": {
+        "Symbol": "F_ext",
+        "mSymbol": "$F_{ext}$",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "Fh": {
+        "Symbol": "F",
+        "Exclude": [
+            "Air",
+            "Isolant"
+        ]
+    },
+    "magnetic_potential": {
+        "Symbol": "A"
+    },
+    "Bg_MagField": {
+        "Symbol": "B_Bg",
+        "mSymbol": "$B_{bg}$"
+    },
+    "magnetic_field": {
+        "Symbol": "B"
+    },
+    "displacement": {
+        "Symbol": "u",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "displacement_x": {
+        "Symbol": "ux",
+        "mSymbol": "$u_x$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "displacement_y": {
+        "Symbol": "uy",
+        "mSymbol": "$u_y$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "displacement_z": {
+        "Symbol": "uz",
+        "mSymbol": "$u_z$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "displacement_ur": {
+        "Symbol": "ur",
+        "mSymbol": "$u_r$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "displacement_ut": {
+        "Symbol": "ut",
+        "mSymbol": "$u_\\theta$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "displacementnorm": {
+        "Symbol": "u",
+        "mSymbol": "$\\| u \\|$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "Lame1": {
+        "Symbol": "Lame1",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "Lame2": {
+        "Symbol": "Lame2",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "princial_stress_0": {
+        "Symbol": "principal_stress_0",
+        "mSymbol": "$\\bar{\\bar{\\sigma}}_0$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "princial_stress_1": {
+        "Symbol": "principal_stress_1",
+        "mSymbol": "$\\bar{\\bar{\\sigma}}_1$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "princial_stress_2": {
+        "Symbol": "principal_stress_2",
+        "mSymbol": "$\\bar{\\bar{\\sigma}}_2$",
+        "Exclude": [
+            "Air"
+        ]
+    },
+    "von_mises_criterions": {
+        "Symbol": "VonMises",
+        "mSymbol": "$\\bar{\\bar{\\sigma}}_{VonMises}$",
+        "Exclude": [
+            "Air"
+        ]
+    }
+}
