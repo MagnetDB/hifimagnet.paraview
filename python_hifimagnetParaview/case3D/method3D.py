@@ -25,7 +25,7 @@ def dictTypeUnits(ureg, distance_unit: str):
         },
         "ElectricConductivity": {
             "Symbol": "Sigma",
-            "mSymobol": r"$\sigma$",
+            "mSymbol": r"$\sigma$",
             "Units": [
                 ureg.siemens / ureg.meter,
                 ureg.siemens / ureg.Unit(distance_unit),
@@ -122,32 +122,32 @@ def dictTypeUnits(ureg, distance_unit: str):
         "ElectricField_x": {
             "Symbol": "Ex",
             "Units": [
-                ureg.volt / ureg.meter**2,
-                ureg.volt / ureg.Unit(distance_unit) ** 2,
+                ureg.volt / ureg.meter,
+                ureg.volt / ureg.Unit(distance_unit),
             ],
             "Exclude": ["Air", "Isolant"],
         },
         "ElectricField_y": {
             "Symbol": "Ey",
             "Units": [
-                ureg.volt / ureg.meter**2,
-                ureg.volt / ureg.Unit(distance_unit) ** 2,
+                ureg.volt / ureg.meter,
+                ureg.volt / ureg.Unit(distance_unit),
             ],
             "Exclude": ["Air", "Isolant"],
         },
         "ElectricField_z": {
             "Symbol": "Ez",
             "Units": [
-                ureg.volt / ureg.meter**2,
-                ureg.volt / ureg.Unit(distance_unit) ** 2,
+                ureg.volt / ureg.meter,
+                ureg.volt / ureg.Unit(distance_unit),
             ],
             "Exclude": ["Air", "Isolant"],
         },
         "ElectricField_ur": {
             "Symbol": "Er",
             "Units": [
-                ureg.volt / ureg.meter**2,
-                ureg.volt / ureg.Unit(distance_unit) ** 2,
+                ureg.volt / ureg.meter,
+                ureg.volt / ureg.Unit(distance_unit),
             ],
             "Exclude": ["Air", "Isolant"],
         },
@@ -155,8 +155,8 @@ def dictTypeUnits(ureg, distance_unit: str):
             "Symbol": "Et",
             "mSymbol": r"$E_{\theta}$",
             "Units": [
-                ureg.volt / ureg.meter**2,
-                ureg.volt / ureg.Unit(distance_unit) ** 2,
+                ureg.volt / ureg.meter,
+                ureg.volt / ureg.Unit(distance_unit),
             ],
             "Exclude": ["Air", "Isolant"],
         },
@@ -164,8 +164,8 @@ def dictTypeUnits(ureg, distance_unit: str):
             "Symbol": "E",
             "mSymbol": r"$\| E \|$",
             "Units": [
-                ureg.volt / ureg.meter**2,
-                ureg.volt / ureg.Unit(distance_unit) ** 2,
+                ureg.volt / ureg.meter,
+                ureg.volt / ureg.Unit(distance_unit),
             ],
             "Exclude": ["Air", "Isolant"],
         },
@@ -751,9 +751,9 @@ def create_dicts(ureg, distance_unit: str, basedir: str):
             ],
             "Exclude": ["Air"],
         },
-        "ElectricalConductivity": {
+        "ElectricConductivity": {
             "Symbol": "Sigma",
-            "mSymobol": r"$\sigma$",
+            "mSymbol": r"$\sigma$",
             "Units": [
                 ureg.siemens / ureg.meter,
                 ureg.siemens / ureg.Unit(distance_unit),

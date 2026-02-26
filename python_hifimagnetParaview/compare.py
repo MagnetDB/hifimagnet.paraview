@@ -314,6 +314,7 @@ def main():
         print("Compare plots:", flush=True)
         os.makedirs(f"{basedir}/plots", exist_ok=True)
         ## add needed str to find the plots we want
+        need = ""
         if args.r:
             need = "vs-r"
         elif args.z:

@@ -62,8 +62,9 @@ Issues = "https://github.com/MagnetDB/hifimagnet.paraview/issues"
 [project.scripts]
 hifimagnet-paraview = "python_hifimagnetParaview.cli:main"
 
-[tool.setuptools]
-packages = ["python_hifimagnetParaview"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["python_hifimagnetParaview*"]
 
 [tool.setuptools.package-data]
 python_hifimagnetParaview = ["*.json", "*.xml"]
