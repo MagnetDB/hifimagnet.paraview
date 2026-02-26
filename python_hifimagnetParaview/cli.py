@@ -19,7 +19,7 @@ import argparse, argcomplete
 import os
 import sys
 
-from pint import UnitRegistry, Quantity
+from pint import UnitRegistry, Quantity, errors as pint_errors
 
 # Ignore warning for pint
 import warnings
@@ -161,8 +161,16 @@ def init(file: str):
 
     # Pint configuration
     ureg = UnitRegistry()
-    ureg.define("percent = 0.01 = %")
-    ureg.define("ppm = 1e-6")
+    # pint >= 0.20 already ships percent/% and ppm as built-ins; only define
+    # them when absent to avoid "Redefining" warnings.
+    for unit, definition in [
+        ("percent", "percent = 0.01 = %"),
+        ("ppm", "ppm = 1e-6"),
+    ]:
+        try:
+            ureg.parse_expression(unit)
+        except pint_errors.UndefinedUnitError:
+            ureg.define(definition)
     ureg.default_system = "SI"
     ureg.autoconvert_offset_to_baseunit = True
 
