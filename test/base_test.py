@@ -14,8 +14,13 @@ from python_hifimagnetParaview.method import convert_data
 
 def assert_images_equal(image_1: str, image_2: str, geometry_type: str):
     """
-    Compare two images and assert they are within tolerance.
-    
+    Compare two images using Normalized RMSE and assert within tolerance.
+
+    The metric is: sqrt(mean((a - b)^2)) / 255, which gives a value in [0, 1]
+    where 0 means identical and 1 means maximally different.
+
+    See docs/testing/image-comparison.md for rationale and tolerance guidance.
+
     Args:
         image_1: Path to first image (reference)
         image_2: Path to second image (generated)
@@ -28,19 +33,15 @@ def assert_images_equal(image_1: str, image_2: str, geometry_type: str):
     img2 = img2.convert(img1.mode)
     img2 = img2.resize(img1.size)
 
-    sum_sq_diff = np.sum(
-        (np.asarray(img1).astype("float") - np.asarray(img2).astype("float")) ** 2
-    )
+    arr1 = np.asarray(img1).astype("float")
+    arr2 = np.asarray(img2).astype("float")
+
+    nrmse = np.sqrt(np.mean((arr1 - arr2) ** 2)) / 255.0
 
     tolerance = get_tolerance("image", geometry_type)
-    if sum_sq_diff == 0:
-        # Images are exactly the same
-        pass
-    else:
-        normalized_sum_sq_diff = sum_sq_diff / np.sqrt(sum_sq_diff)
-        assert (
-            normalized_sum_sq_diff < tolerance
-        ), f'{image_1.split("/")[-1]}: {normalized_sum_sq_diff} > {tolerance}'
+    assert nrmse < tolerance, (
+        f'{image_1.split("/")[-1]}: nrmse={nrmse:.6f} > tolerance={tolerance}'
+    )
 
 
 def validate_temperature_stats(
