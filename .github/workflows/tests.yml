@@ -71,9 +71,10 @@ jobs:
           path: /opt/paraview
           key: paraview-${{ env.PV_VERSION }}-${{ env.PV_FLAVOR }}-py${{ env.PY_VERSION }}
 
+      # System libraries are always needed (the runner is a fresh VM each run;
+      # only /opt/paraview is cached, not apt packages).
       - name: Install ParaView system libraries
-        if: steps.cache-paraview.outputs.cache-hit != 'true'
-        run: sudo apt-get install -y libgomp1 libgl1
+        run: sudo apt-get install -y libgomp1 libgl1 libglu1-mesa
 
       - name: Download and install ParaView (headless, osmesa)
         if: steps.cache-paraview.outputs.cache-hit != 'true'
@@ -82,6 +83,14 @@ jobs:
           PV_FILE="ParaView-${PV_VERSION}-${PV_FLAVOR}-Linux-Python${PY_VERSION}-${ARCH}.tar.gz"
           PV_URL="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v${PV_VERSION_MAJOR}&type=binary&os=Linux&downloadFile=${PV_FILE}"
           wget -qO- "${PV_URL}" | tar --strip-components=1 -xz -C /opt/paraview
+
+      # Persist ParaView paths for all subsequent steps (pip install, pytest…).
+      # Without LD_LIBRARY_PATH the ParaView C extensions cannot load their
+      # shared libraries even when PYTHONPATH is correct.
+      - name: Configure ParaView environment
+        run: |
+          echo "PYTHONPATH=/opt/paraview/lib/python${{ env.PY_VERSION }}/site-packages" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=/opt/paraview/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
 
       # Cache the extracted test data to avoid re-extracting data.tar.gz on
       # every run. The cache key is the content hash of data.tar.gz, so a new
@@ -106,5 +115,3 @@ jobs:
 
       - name: Run integration tests
         run: pytest -m integration -v --tb=short
-        env:
-          PYTHONPATH: /opt/paraview/lib/python${{ env.PY_VERSION }}/site-packages
