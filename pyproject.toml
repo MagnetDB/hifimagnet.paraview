@@ -43,6 +43,7 @@ test = [
 dev = [
     "pytest>=8.2.1",
     "pytest-image-diff>=0.0.11",
+    "ruff>=0.4.0",
     "sphinx>=7.0.0",
     "sphinx-rtd-theme>=2.0.0",
 ]
@@ -78,3 +79,30 @@ markers = [
     "unit: tests that do not require ParaView or test data",
     "integration: tests that require ParaView and test data (data.tar.gz)",
 ]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes (undefined names, unused imports, …)
+    "I",   # isort — import ordering
+    "N",   # pep8-naming conventions
+    "UP",  # pyupgrade — modernise syntax for target Python
+    "B",   # flake8-bugbear — likely bugs and design issues
+]
+ignore = [
+    "E501",  # line too long — enforced by the formatter instead
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["python_hifimagnetParaview"]
+force-sort-within-sections = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
