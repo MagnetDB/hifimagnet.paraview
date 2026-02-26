@@ -1,0 +1,107 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # -------------------------------------------------------------------------
+  # Unit tests — no ParaView, no test data required.
+  # Run on every push and PR, across all supported Python versions.
+  # -------------------------------------------------------------------------
+  unit-tests:
+    name: Unit Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install -e ".[test]"
+
+      - name: Run unit tests
+        run: pytest -m unit -v --tb=short
+
+  # -------------------------------------------------------------------------
+  # Integration tests — require ParaView (headless/osmesa) and data.tar.gz.
+  # Run on push to main and on manual dispatch.
+  # Both the ParaView installation and the extracted test data are cached to
+  # avoid redundant downloads and extraction across CI runs.
+  # -------------------------------------------------------------------------
+  integration-tests:
+    name: Integration Tests (ParaView ${{ env.PV_VERSION }})
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    env:
+      PV_VERSION_MAJOR: "5.12"
+      PV_VERSION: "5.12.0"
+      PV_FLAVOR: "osmesa-MPI"
+      PY_VERSION: "3.10"
+      ARCH: "x86_64"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Pull Git LFS objects (test/data.tar.gz, ~20 MB)
+          lfs: true
+
+      # Cache the ParaView binary installation.
+      # Key includes version and flavor so a new download is triggered only
+      # when the ParaView version changes.
+      - name: Cache ParaView installation
+        id: cache-paraview
+        uses: actions/cache@v4
+        with:
+          path: /opt/paraview
+          key: paraview-${{ env.PV_VERSION }}-${{ env.PV_FLAVOR }}-py${{ env.PY_VERSION }}
+
+      - name: Install ParaView system libraries
+        if: steps.cache-paraview.outputs.cache-hit != 'true'
+        run: sudo apt-get install -y libgomp1 libgl1
+
+      - name: Download and install ParaView (headless, osmesa)
+        if: steps.cache-paraview.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /opt/paraview
+          PV_FILE="ParaView-${PV_VERSION}-${PV_FLAVOR}-Linux-Python${PY_VERSION}-${ARCH}.tar.gz"
+          PV_URL="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v${PV_VERSION_MAJOR}&type=binary&os=Linux&downloadFile=${PV_FILE}"
+          wget -qO- "${PV_URL}" | tar --strip-components=1 -xz -C /opt/paraview
+
+      # Cache the extracted test data to avoid re-extracting data.tar.gz on
+      # every run. The cache key is the content hash of data.tar.gz, so a new
+      # extraction is triggered only when the archive itself changes.
+      - name: Cache extracted test data
+        uses: actions/cache@v4
+        with:
+          path: |
+            test/cases
+            test/models
+            test/Pictures
+            test/.data_extracted
+          key: test-data-${{ hashFiles('test/data.tar.gz') }}
+
+      - name: Set up Python ${{ env.PY_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PY_VERSION }}
+
+      - name: Install Python dependencies
+        run: pip install -e ".[test]"
+
+      - name: Run integration tests
+        run: pytest -m integration -v --tb=short
+        env:
+          PYTHONPATH: /opt/paraview/lib/python${{ env.PY_VERSION }}/site-packages
