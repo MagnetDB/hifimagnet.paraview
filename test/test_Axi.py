@@ -1,4 +1,7 @@
 import pytest
+
+pytestmark = pytest.mark.integration
+
 import gmsh
 import re
 import json

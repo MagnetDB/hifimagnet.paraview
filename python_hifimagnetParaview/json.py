@@ -1,4 +1,5 @@
 import json
+from importlib.resources import files
 
 
 def get_materials_markers(materials: dict) -> list[str]:
@@ -57,7 +58,7 @@ def jsonFeel_to_fieldDict(data: dict, PostProcess: dict, dictType: dict) -> dict
         dict: fieldType dict
     """
 
-    dict = {}
+    field_dict = {}
 
     exportcfpdes = json_get(PostProcess, "cfpdes", "Exports")
     exportsolid = json_get(PostProcess, "solid", "Exports")
@@ -81,7 +82,7 @@ def jsonFeel_to_fieldDict(data: dict, PostProcess: dict, dictType: dict) -> dict
                             data, "Models", m, "common", "setup", "unknown", "name"
                         )
                         if field:
-                            dict[field.replace("-", "_")] = {
+                            field_dict[field.replace("-", "_")] = {
                                 "Type": dictType[field],
                                 "Exclude": [],
                             }
@@ -93,7 +94,7 @@ def jsonFeel_to_fieldDict(data: dict, PostProcess: dict, dictType: dict) -> dict
                         .replace("magnetic.", "")
                         .replace("electric.", "")
                     )
-                    dict[field.replace("-", "_")] = {
+                    field_dict[field.replace("-", "_")] = {
                         "Type": dictType[field],
                         "Exclude": [],
                     }
@@ -106,8 +107,8 @@ def jsonFeel_to_fieldDict(data: dict, PostProcess: dict, dictType: dict) -> dict
                     if isinstance(include, str):
                         include = [include]
                     exclude = list(set(allmarkers) - set(include))
-                dict[f] = {"Type": dictType[f], "Exclude": exclude}
-    return dict
+                field_dict[f] = {"Type": dictType[f], "Exclude": exclude}
+    return field_dict
 
 
 def returnExportFields(jsonmodel: str, basedir: str) -> dict:
@@ -125,7 +126,7 @@ def returnExportFields(jsonmodel: str, basedir: str) -> dict:
 
     PostProcess = json_get(data, "PostProcess")
     if PostProcess:
-        with open("./python_hifimagnetParaview/FeelppType.json", "r") as jsonfile:
+        with files("python_hifimagnetParaview").joinpath("FeelppType.json").open() as jsonfile:
             feel_dictType = json.load(jsonfile)
         data = jsonFeel_to_fieldDict(data, PostProcess, feel_dictType)
 

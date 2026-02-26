@@ -249,16 +249,16 @@ def keyinfo(key: str) -> tuple:
     Returns:
         tuple: A tuple containing toolbox, physic, and fieldname.
     """
-    keyinfo = key.split(".")
-    if len(keyinfo) == 1:
+    parts = key.split(".")
+    if len(parts) == 1:
         toolbox = None
         physic = None
         fieldname = key
-    elif len(keyinfo) == 2:
+    elif len(parts) == 2:
         toolbox = None
-        (physic, fieldname) = keyinfo
-    elif len(keyinfo) == 3:
-        (toolbox, physic, fieldname) = keyinfo
+        (physic, fieldname) = parts
+    elif len(parts) == 3:
+        (toolbox, physic, fieldname) = parts
     else:
         raise RuntimeError(f"{key}: cannot get keyinfo as splitted char")
 
@@ -303,7 +303,16 @@ def load(file: str, printed: bool = True):
     return input
 
 def torque(input, key: str, AttributeType: str):
-    """compute torque"""
+    """compute torque
+
+    Args:
+        input: paraview reader
+        key (str): field name
+        AttributeType (str): Point Data or Cell Data
+
+    Returns:
+        calculator
+    """
 
     # compute G for cell
 
@@ -312,6 +321,8 @@ def torque(input, key: str, AttributeType: str):
     calculator1.ResultArrayName = f"torque_{key}"
 
     calculator1.Function = f"coordsX*{key}"
+    calculator1.UpdatePipeline()
+    return calculator1
 
 def momentN(input, key: str, nkey: str, order: int, AttributeType: str):
     """compute moment of order N
@@ -520,6 +531,7 @@ def getB0(reader, fieldtype: dict, basedir: str, dim: int, axis: bool = False) -
     # init the 'Fixed Radius Point Source' selected for 'ProbeType'
     probeLocation.ProbeType.Center = [0.0, 0.0, 0.0]
 
+    savedkey = None
     for key in list(probeLocation.PointData.keys()) + list(
         probeLocation.CellData.keys()
     ):
@@ -542,6 +554,9 @@ def getB0(reader, fieldtype: dict, basedir: str, dim: int, axis: bool = False) -
             )
             savedkey = key
             break
+
+    if savedkey is None:
+        return None
 
     try:
         df = pd.read_csv(f"{basedir}/insert-B0.csv")

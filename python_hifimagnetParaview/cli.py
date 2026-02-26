@@ -218,10 +218,14 @@ def main():
             dim = 2
             axis = True
         case _:
-            pass
+            parser.error(
+                f"Unknown dimension: {args.dimmension!r}. Must be 3D, 2D, or Axi."
+            )
+            return 1
 
     (cwd, basedir, ureg, distance_unit, reader) = init(args.file)
 
+    fieldtype = {}
     if args.json:
         fieldtype = returnExportFields(args.json, basedir)
         fieldunits, ignored_keys = create_dicts_fromjson(

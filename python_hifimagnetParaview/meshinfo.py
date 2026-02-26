@@ -34,7 +34,7 @@ def scaleField(input, key: str, nkey: str, AttributeType: str, factor: float):
     calculator1 = Calculator(registrationName="Calculator1", Input=input)
     calculator1.AttributeType = AttributeType  # 'Cell Data'
     calculator1.ResultArrayName = f"{nkey}"
-    calculator1.Function = f'{key}/{factor}")'
+    calculator1.Function = f'{key}/{factor}'
 
     calculator1.UpdatePipeline()
     return calculator1
@@ -57,11 +57,11 @@ def addField(input, key: str, nkey: str, AttributeType: str, factor: float):
     calculator1.AttributeType = AttributeType  # 'Cell Data'
     calculator1.ResultArrayName = f"{nkey}"
 
-    # if float is negatif
-    if float < 0:
-        calculator1.Function = f'{key}-{abs(factor)}")'
+    # if factor is negative
+    if factor < 0:
+        calculator1.Function = f'{key}-{abs(factor)}'
     else:
-        calculator1.Function = f'{key}+{factor}")'
+        calculator1.Function = f'{key}+{factor}'
 
     calculator1.UpdatePipeline()
     return calculator1
