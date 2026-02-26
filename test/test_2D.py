@@ -162,4 +162,3 @@ def test_stats(file, jsonfile):
 
     if isinstance(elasticmeasures, pd.DataFrame):
         validate_vonmises_stats(elasticmeasures, statselastic, fieldunits, "2D")
-        ), f'VonMisesmin: abs(1-Feel:{Feel_VM_min}/Paraview:{statselastic["Minimum"].iloc[0]}) > 0.01'

@@ -35,7 +35,10 @@ jobs:
         run: pip install -e ".[test]"
 
       - name: Run unit tests
-        run: pytest -m unit -v --tb=short
+        # Specify the file explicitly so pytest never collects the integration
+        # test modules (test_2D/3D/Axi), which import method.py and trigger a
+        # top-level "from paraview.simple import …" that fails without ParaView.
+        run: pytest -m unit -v --tb=short test/test_unit.py
 
   # -------------------------------------------------------------------------
   # Integration tests — require ParaView (headless/osmesa) and data.tar.gz.
