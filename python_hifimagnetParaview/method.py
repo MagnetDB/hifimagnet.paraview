@@ -249,16 +249,16 @@ def keyinfo(key: str) -> tuple:
     Returns:
         tuple: A tuple containing toolbox, physic, and fieldname.
     """
-    keyinfo = key.split(".")
-    if len(keyinfo) == 1:
+    parts = key.split(".")
+    if len(parts) == 1:
         toolbox = None
         physic = None
         fieldname = key
-    elif len(keyinfo) == 2:
+    elif len(parts) == 2:
         toolbox = None
-        (physic, fieldname) = keyinfo
-    elif len(keyinfo) == 3:
-        (toolbox, physic, fieldname) = keyinfo
+        (physic, fieldname) = parts
+    elif len(parts) == 3:
+        (toolbox, physic, fieldname) = parts
     else:
         raise RuntimeError(f"{key}: cannot get keyinfo as splitted char")
 
