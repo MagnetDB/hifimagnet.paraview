@@ -310,14 +310,6 @@ def dictTypeUnits(ureg, distance_unit: str):
             ],
             "Exclude": ["Air"],
         },
-        "ForceLaplace": {
-            "Symbol": "F",
-            "Units": [
-                ureg.newton / ureg.meter**3,
-                ureg.newton / ureg.Unit(distance_unit) ** 3,
-            ],
-            "Exclude": ["Air", "Isolant"],
-        },
         "ForceLaplace_x": {
             "Symbol": "Fx",
             "Units": [
