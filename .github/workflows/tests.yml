@@ -64,6 +64,12 @@ jobs:
           # Pull Git LFS objects (test/data.tar.gz, ~20 MB)
           lfs: true
 
+      # Belt-and-suspenders: actions/checkout lfs:true sets up the filter but
+      # does not always download objects on self-hosted or Gitea runners.
+      # An explicit pull guarantees the real binary is present before we hash it.
+      - name: Pull Git LFS objects
+        run: git lfs pull
+
       # Cache the ParaView binary installation.
       # Key includes version and flavor so a new download is triggered only
       # when the ParaView version changes.

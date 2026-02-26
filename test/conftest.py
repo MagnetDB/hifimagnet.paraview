@@ -37,6 +37,25 @@ def test_data():
     if not archive_path.exists():
         pytest.fail(f"Test data archive not found: {archive_path}")
 
+    # Guard against Git LFS pointer files (checked out without `lfs: true`).
+    # tarfile.is_tarfile() returns False for the small text pointer, so we
+    # skip extraction gracefully.  Unit tests do not need the extracted data;
+    # integration tests will fail later at the test level with a clear message
+    # if the real archive was never fetched.
+    try:
+        valid_archive = tarfile.is_tarfile(archive_path)
+    except Exception:
+        valid_archive = False
+
+    if not valid_archive:
+        print(
+            f"\n⚠ {archive_path.name} is not a valid tarball "
+            "(possibly a Git LFS pointer or corrupted file). "
+            "Skipping extraction — tests that require extracted data will fail."
+        )
+        yield
+        return
+
     print(f"\n→ Extracting test data from {archive_path.name}...")
 
     # Extract archive
