@@ -1,5 +1,5 @@
 import json
-from importlib.resources import files
+from pathlib import Path
 
 
 def get_materials_markers(materials: dict) -> list[str]:
@@ -126,7 +126,7 @@ def returnExportFields(jsonmodel: str, basedir: str) -> dict:
 
     PostProcess = json_get(data, "PostProcess")
     if PostProcess:
-        with files("python_hifimagnetParaview").joinpath("FeelppType.json").open() as jsonfile:
+        with open(Path(__file__).parent / "FeelppType.json") as jsonfile:
             feel_dictType = json.load(jsonfile)
         data = jsonFeel_to_fieldDict(data, PostProcess, feel_dictType)
 
