@@ -29,10 +29,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install system dependencies
-        run: sudo apt-get install -y libglu1-mesa
-
-      - name: Install GL dependencies
-        run: sudo apt-get install -y libglapi-mesa
+        run: sudo apt-get install -y libglu1-mesa libglapi-mesa
 
       - name: Install dependencies
         run: pip install -e ".[test]"
@@ -86,7 +83,7 @@ jobs:
       # System libraries are always needed (the runner is a fresh VM each run;
       # only /opt/paraview is cached, not apt packages).
       - name: Install ParaView system libraries
-        run: sudo apt-get install -y libgomp1 libgl1 libglu1-mesa
+        run: sudo apt-get install -y libgomp1 libgl1 libglu1-mesa libglapi-mesa
 
       - name: Download and install ParaView (headless, osmesa)
         if: steps.cache-paraview.outputs.cache-hit != 'true'
